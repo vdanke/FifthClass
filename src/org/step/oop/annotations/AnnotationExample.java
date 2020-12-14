@@ -12,7 +12,7 @@ public class AnnotationExample {
     }
 
     public static void main(String[] args) throws IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException {
-        Person person = idMakerAnnotationProcessor(Person.class, false);
+        idMakerAnnotationProcessor(Person.class, false);
 
         final PersonService object = createObject(PersonService.class);
 
@@ -26,10 +26,10 @@ public class AnnotationExample {
             }
             System.out.println(p.getId());
         }
-        System.out.println(person.getId());
+//        System.out.println(person.getId());
     }
 
-    private static Person idMakerAnnotationProcessor(Class<Person> personClass, boolean isAnnotationCreation) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+    private static Object idMakerAnnotationProcessor(Class<Person> personClass, boolean isAnnotationCreation) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
         Field[] declaredFields = personClass.getDeclaredFields();
 
         for (Field field : declaredFields) {
@@ -39,6 +39,11 @@ public class AnnotationExample {
                     System.out.println("Annotation ID creation");
                     Constructor<Person> declaredConstructor = personClass.getDeclaredConstructor();
                     Person person = declaredConstructor.newInstance();
+                    try {
+                        person.getId();
+                    } catch (Exception e) {
+                        return e;
+                    }
                     field.set(person, UUID.randomUUID().toString());
                     return person;
                 } else {
