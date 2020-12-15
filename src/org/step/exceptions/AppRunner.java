@@ -1,6 +1,5 @@
 package org.step.exceptions;
 
-import org.step.exceptions.api.CustomNotAuthorizedException;
 import org.step.exceptions.api.FailureAuthorizationHandler;
 import org.step.exceptions.api.FailureAuthorizationHandlerImpl;
 import org.step.exceptions.api.NotAuthorizedException;
