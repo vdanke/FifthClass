@@ -2,10 +2,9 @@ package org.step.java.eight.stream.api.lambdas;
 
 import org.step.java.eight.stream.api.functional.interfaces.DataTransformer;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -21,10 +20,6 @@ public class LambdaPractice {
         for (String str : array) {
             System.out.println(str);
         }
-
-        linksExample();
-     */
-    public static void main(String[] args) {
         String data = "Test data";
 
         Function<String , StringBuffer> processingImpl = s -> {
@@ -42,6 +37,38 @@ public class LambdaPractice {
         StringBuffer processing = processing(data, StringBuffer::new);
         StringBuffer processing1 = processing(data, processingImpl);
         StringBuffer processing2 = processing(data, processingImplWithPrefix);
+        linksExample();
+     */
+    public static void main(String[] args) {
+        variableLambdaVisibility(true, 5);
+    }
+
+    /*
+    1. (Final) Неизменяемая в лямбе || final переменная
+    2. (Effective final) Переменная, которая изменяет состояние, но не форму
+       (нельзя повторно инициализировать в лябмде)
+    */
+    public static void variableLambdaVisibility(final boolean flag, final int count) {
+        List<Integer> list = new CopyOnWriteArrayList<>();
+        /*
+        Нельзя называть в рамках одного метода аргумент в лямбде
+        тем же именем, как и переменная выше
+         */
+//        Comparator<List<String>> comparator = (list, list2) -> 0;
+        Runnable runnable = () -> {
+//            int i = count;
+//            i++;
+            if (flag) {
+                for (int i = 0; i < count; i++) {
+                    list.add(i);
+                    System.out.printf("Count: %d%n", i);
+                }
+            } else {
+                System.out.println("Flag is false, count disabled");
+            }
+            list.remove(new Random(count).nextInt());
+        };
+        new Thread(runnable).start();
     }
 
     public static void defaultLambdaDeclaration() {
@@ -58,6 +85,8 @@ public class LambdaPractice {
             return "";
         };
     }
+
+
 
     public static void linksExample() {
         Consumer<String> first = s -> System.out.println(s);
@@ -95,9 +124,9 @@ public class LambdaPractice {
         Function<String, StringBuffer> function = StringBuffer::new;
     }
 
-    public static StringBuffer processing(String data, Function<String, StringBuffer> function) {
-        return function.apply(data);
-    }
+//    public static StringBuffer processing(String data, Function<String, StringBuffer> function) {
+//        return function.apply(data);
+//    }
 
 //    public static void comparatorExample(String[] array, Comparator<String> comparator) {
 //        Arrays.sort(array, comparator);
